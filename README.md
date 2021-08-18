@@ -10,7 +10,7 @@ The differences are:
   
 ## Demo
 
-![Screenshot_20210819_114836](https://user-images.githubusercontent.com/8016/129986649-f0492ea0-5538-40b9-8753-e27ebf9c0676.png)
+<img src="https://user-images.githubusercontent.com/8016/129986649-f0492ea0-5538-40b9-8753-e27ebf9c0676.png" width="800">
 
 ## Installing the extension
 
