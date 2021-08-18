@@ -7,6 +7,7 @@ The differences are:
 - Sorts using the Zendesk view sort order
 - Groups using the Zendesk view grouping
 - Shows the exact Zendesk view columns
+- Refresh button to refresh the view
   
 ## Demo
 
