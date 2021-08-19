@@ -15,5 +15,5 @@ The differences are:
 
 ## Installing the extension
 
-Install the Zendesk extension by clicking [here](https://secure.aha.io/settings/account/extensions/install?url=).
+Install the Zendesk extension by clicking [here](https://secure.aha.io/settings/account/extensions/install?url=https://github.com/jemmyw/aha-ext-kealabs-zendesk/releases/download/1.0.0/kealabs.zendesk-v1.0.0.gz).
 
