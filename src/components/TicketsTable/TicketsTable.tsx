@@ -32,13 +32,12 @@ export const TicketsTable: React.FC<{
           {columns.map((col) => (
             <th key={col.id}>{col.title}</th>
           ))}
-          <th>
+          <th style={{ textAlign: "right" }}>
             <aha-button
               type="unstyled"
               onClick={refresh}
               style={{
                 color: "var(--theme-tertiary-text)",
-                textAlign: "right",
               }}
             >
               <aha-icon icon="fa-regular fa-refresh" />
