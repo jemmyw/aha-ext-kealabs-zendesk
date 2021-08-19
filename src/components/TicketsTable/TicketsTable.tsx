@@ -21,10 +21,6 @@ export const TicketsTable: React.FC<{
     set(zendeskRefreshId, (n) => (n += 1));
   });
 
-  if (rows.length === 0) {
-    return <div>No tickets</div>;
-  }
-
   const formatters = columns.map((column) =>
     columnFormatter(column, execution, subdomain)
   );
@@ -50,6 +46,15 @@ export const TicketsTable: React.FC<{
           </th>
         </tr>
       </thead>
+      {rows.length === 0 && (
+        <tbody>
+          <tr>
+            <td colSpan={columns.length + 1} style={{ textAlign: "center" }}>
+              No tickets
+            </td>
+          </tr>
+        </tbody>
+      )}
       {groups.map((groupName) => (
         <Group viewId={viewId} groupName={groupName} formatters={formatters} />
       ))}
