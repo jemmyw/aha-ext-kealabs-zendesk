@@ -17,7 +17,7 @@ export const Group: React.FC<{
           <td
             colSpan={formatters.length + 1}
             style={{
-              backgroundColor: "var(--aha-gray-200)",
+              backgroundColor: "var(--theme-tertiary-background)",
             }}
           >
             {groupName}

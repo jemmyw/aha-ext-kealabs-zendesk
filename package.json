@@ -1,11 +1,11 @@
 {
   "name": "kealabs.zendesk",
-  "description": "Zendesk",
-  "version": "1.0.0",
+  "description": "Zendesk Panel",
+  "version": "1.1.0",
   "author": "kealabs",
   "repository": {
     "type": "git",
-    "url": "TODO: Add the GitHub URL to your extension in package.json"
+    "url": "https://github.com/jemmyw/aha-ext-kealabs-zendesk.git"
   },
   "license": "MIT",
   "devDependencies": {

@@ -1,2 +1,4 @@
 export const IDENTIFIER = "kealabs.zendesk";
-export const settings = aha.settings.get(IDENTIFIER);
+export const settings = aha.settings.get(IDENTIFIER) as {
+  subdomain: string;
+};
