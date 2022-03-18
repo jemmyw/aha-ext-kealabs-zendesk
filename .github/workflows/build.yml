@@ -1,5 +1,12 @@
 name: Build extension
-on: [push]
+on: 
+  workflow_dispatch:
+    inputs:
+      version:
+        description: Release version
+        required: true
+        type: string
+
 jobs:
   Build:
     runs-on: ubuntu-latest
@@ -11,13 +18,17 @@ jobs:
           node-version: '16'
       - run: npm install -g aha-cli
       - run: yarn install
+      - run: "yarn version --new-version ${{ github.event.inputs.version }} --no-git-tag-version"
       - run: aha extension:build
+      - uses: EndBug/add-and-commit@v9
+        with:
+          message: "v${{ github.event.inputs.version }}"
+          add: "package.json"
       - name: Create a release
         uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.RELEASE_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Development Build"
+          automatic_release_tag: "${{ github.event.inputs.version }}"
+          title: "${{ github.event.inputs.version }}"
           files: |
             *.gz
