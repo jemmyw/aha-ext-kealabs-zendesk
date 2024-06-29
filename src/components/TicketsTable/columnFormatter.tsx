@@ -1,11 +1,42 @@
 import { DateTime } from "luxon";
 import React from "react";
 
+export function idToData(id: Zendesk.ID | null, execution: Zendesk.Execution) {
+  return (row: Zendesk.Row) => {
+    if (!id) return null;
+
+    switch (id) {
+      case "created":
+      case "updated":
+        const date = new Date(row[id]);
+        const relative = DateTime.fromJSDate(date).toRelative();
+        return relative;
+      case "requester":
+      case "assignee":
+        const user_id = row[`${id}_id`];
+        const user = execution.users.find((u) => u.id === user_id);
+
+        return user?.name;
+      case "custom_status_id":
+        const status = execution.custom_statuses?.find(
+          (s) => s.id === row["custom_status_id"]
+        );
+
+        return status?.name;
+    }
+
+    return row[id];
+  };
+}
+
 export function columnFormatter(
-  column: Zendesk.Column,
+  column: Zendesk.Column | Zendesk.Group | null,
   execution: Zendesk.Execution,
   subdomain: string
 ): React.FC<{ row: Zendesk.Row }> {
+  if (!column) return () => <></>;
+  const idTransformer = idToData(column.id, execution);
+
   switch (column.id) {
     case "subject":
       return ({ row }) => (
@@ -16,25 +47,10 @@ export function columnFormatter(
           )}
           rel="noreferrer noopener"
         >
-          {row[column.id]}
+          {idTransformer(row)}
         </a>
       );
-    case "created":
-    case "updated":
-      return ({ row }) => {
-        const date = new Date(row[column.id]);
-        const relative = DateTime.fromJSDate(date).toRelative();
-        return <>{relative}</>;
-      };
-    case "requester":
-      return ({ row }) => {
-        const requester = execution.users.find(
-          (u) => u.id === row["requester_id"]
-        );
-
-        return <>{requester?.name}</>;
-      };
   }
 
-  return ({ row }) => <>{row[column.id]}</>;
+  return ({ row }) => <>{idTransformer(row)}</>;
 }

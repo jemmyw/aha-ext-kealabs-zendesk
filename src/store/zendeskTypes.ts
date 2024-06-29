@@ -36,15 +36,16 @@ declare namespace Zendesk {
   type Order = "asc" | "desc";
 
   interface Execution {
-    group_by: string;
-    group_order: Order;
+    group_by: string | null;
+    group_order: Order | null;
     sort_by: string;
     sort_order: Order;
-    group: Group;
+    group: Group | null;
     sort: Group;
     columns: Column[];
     fields: Column[];
     custom_fields: any[];
+    custom_statuses?: any[];
   }
 
   interface Group {

@@ -6,21 +6,22 @@ import { columnFormatter } from "./columnFormatter";
 export const Group: React.FC<{
   viewId: number;
   groupName: string;
+  Formatter: ReturnType<typeof columnFormatter>;
   formatters: ReturnType<typeof columnFormatter>[];
-}> = ({ viewId, groupName, formatters }) => {
+}> = ({ viewId, groupName, Formatter, formatters }) => {
   const rows = useRecoilValue(zendeskViewGroupSelector({ viewId, groupName }));
 
   return (
     <tbody>
-      {groupName !== "" && (
+      {groupName && (
         <tr className="zendesk-ticket-group">
           <td
-            colSpan={formatters.length + 1}
+            colSpan={formatters.length}
             style={{
               backgroundColor: "var(--theme-tertiary-background)",
             }}
           >
-            {groupName}
+            <Formatter row={rows[0]} />
           </td>
         </tr>
       )}

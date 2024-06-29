@@ -1,6 +1,7 @@
 import { atom, noWait, selector, selectorFamily, waitForAll } from "recoil";
 import { settingSelector } from "./aha";
 import { zendeskFetch } from "./zendeskFetch";
+import { idToData } from "../components/TicketsTable/columnFormatter";
 
 export const forceZendeskAuthState = atom({
   key: "forceZendeskAuth",
@@ -105,6 +106,16 @@ export const zendeskViewSelector = selectorFamily({
     },
 });
 
+export const zendeskGroupSelector = selectorFamily({
+  key: "zendeskGroup",
+  get:
+    (viewId: number) =>
+    async ({ get }) => {
+      const { view } = get(zendeskViewSelector(viewId));
+      return view.execution.group;
+    },
+});
+
 export const zendeskViewGroupedDataSelector = selectorFamily<
   {
     [index: string]: Zendesk.Row[];
@@ -115,8 +126,8 @@ export const zendeskViewGroupedDataSelector = selectorFamily<
   get:
     (viewId: number) =>
     ({ get }) => {
-      const { view, execution } = get(zendeskViewSelector(viewId));
-      const group = view.execution.group;
+      const { execution } = get(zendeskViewSelector(viewId));
+      const group = get(zendeskGroupSelector(viewId));
 
       if (!group) {
         return { "": execution.rows };
@@ -138,7 +149,7 @@ export const zendeskViewGroupedDataSelector = selectorFamily<
       }
 
       return execution.rows.reduce((acc, row) => {
-        const groupName = String(row[group.id]);
+        const groupName = String(row[group.id] || row[group.id + "_id"] || "");
         return {
           ...acc,
           [groupName]: [...(acc[groupName] || []), row],
@@ -152,19 +163,29 @@ export const zendeskViewGroupsSelector = selectorFamily({
   get:
     (viewId: number) =>
     ({ get }) => {
-      const {
-        view: { execution },
-      } = get(zendeskViewSelector(viewId));
+      const group = get(zendeskGroupSelector(viewId));
+      if (!group) return [""];
       const groupData = get(zendeskViewGroupedDataSelector(viewId));
+      const { execution } = get(zendeskViewSelector(viewId));
+      const idTransformer = idToData(group.id, execution);
 
-      switch (execution.group?.order) {
-        case "asc":
-          return Object.keys(groupData).sort();
-        case "desc":
-          return Object.keys(groupData).sort().reverse();
-        default:
-          return Object.keys(groupData);
+      if (!group?.order) return Object.keys(groupData);
+
+      const groupIds = Object.entries(groupData)
+        .map(([id, rows]) => ({
+          id,
+          name: idTransformer(rows[0]),
+        }))
+        .sort((a, b) => {
+          return String(a.name).localeCompare(String(b.name));
+        })
+        .map((group) => group.id);
+
+      if (group.order === "desc") {
+        return groupIds.reverse();
       }
+
+      return groupIds;
     },
 });
 
